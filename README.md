@@ -18,13 +18,12 @@ It includes tools and scripts for vulnerability assessment, scanning, and inform
 - Django (if applicable)
 - Required dependencies (see `requirements.txt`)
 
+##Author
+Rohan Rajendra Deshmukh
+
+
 Install dependencies:
 ```bash
 pip install -r requirements.txt
 
-
-
-
-Author
-Rohan Rajendra Deshmukh
 
