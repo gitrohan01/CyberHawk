@@ -20,7 +20,7 @@ It includes tools and scripts for vulnerability assessment, scanning, and inform
 
 ---
 ## Author
--Rohan Rajendra Deshmukh
+- Rohan Rajendra Deshmukh
 
 ---
 Install dependencies:
