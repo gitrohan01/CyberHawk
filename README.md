@@ -21,3 +21,10 @@ It includes tools and scripts for vulnerability assessment, scanning, and inform
 Install dependencies:
 ```bash
 pip install -r requirements.txt
+
+
+
+
+Author
+Rohan Rajendra Deshmukh
+
