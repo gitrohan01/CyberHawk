@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import ScanForm
-from .models import ScanSession  # Assuming you store scans like this
+from .models import ScanSession   # Assuming you store scans like this
 
 def home(request):
     if request.method == 'POST':
