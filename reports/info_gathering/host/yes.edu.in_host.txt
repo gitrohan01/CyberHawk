@@ -1,0 +1,6 @@
+yes.edu.in has address 64.227.176.97
+yes.edu.in mail is handled by 5 alt1.aspmx.l.google.com.
+yes.edu.in mail is handled by 1 aspmx.l.google.com.
+yes.edu.in mail is handled by 5 alt2.aspmx.l.google.com.
+yes.edu.in mail is handled by 10 alt3.aspmx.l.google.com.
+yes.edu.in mail is handled by 10 alt4.aspmx.l.google.com.

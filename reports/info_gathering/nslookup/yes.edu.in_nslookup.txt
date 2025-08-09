@@ -1,0 +1,7 @@
+Server:		192.168.20.2
+Address:	192.168.20.2#53
+
+Non-authoritative answer:
+Name:	yes.edu.in
+Address: 64.227.176.97
+

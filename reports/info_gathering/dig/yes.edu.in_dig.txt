@@ -1,0 +1,30 @@
+
+; <<>> DiG 9.20.11 <<>> yes.edu.in
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 23035
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 3, ADDITIONAL: 4
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; MBZ: 0x0005, udp: 4096
+;; QUESTION SECTION:
+;yes.edu.in.			IN	A
+
+;; ANSWER SECTION:
+yes.edu.in.		5	IN	A	64.227.176.97
+
+;; AUTHORITY SECTION:
+yes.edu.in.		5	IN	NS	ns3.digitalocean.com.
+yes.edu.in.		5	IN	NS	ns2.digitalocean.com.
+yes.edu.in.		5	IN	NS	ns1.digitalocean.com.
+
+;; ADDITIONAL SECTION:
+ns1.digitalocean.com.	5	IN	A	172.64.52.210
+ns2.digitalocean.com.	5	IN	A	172.64.53.21
+ns3.digitalocean.com.	5	IN	A	172.64.49.209
+
+;; Query time: 3 msec
+;; SERVER: 192.168.20.2#53(192.168.20.2) (UDP)
+;; WHEN: Sat Aug 09 14:21:30 UTC 2025
+;; MSG SIZE  rcvd: 173
+
