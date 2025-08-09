@@ -1,7 +1,15 @@
-#!/bin/bash
-TARGET=$1
-if [ -z "$TARGET" ]; then
-    echo "Usage: $0 <target>"
-    exit 1
+#!/bin/sh
+
+if [ -z "$1" ]; then
+  echo "Usage: sh run.sh <domain>"
+  exit 1
 fi
-nslookup "$TARGET"
+
+OUTPUT_DIR="/app/reports/info_gathering/nslookup"
+mkdir -p "$OUTPUT_DIR"
+
+OUTPUT_FILE="${OUTPUT_DIR}/${1}_nslookup.txt"
+nslookup "$1" > "$OUTPUT_FILE"
+
+echo "NSLOOKUP results saved to $OUTPUT_FILE"
+

@@ -1,7 +1,14 @@
-#!/bin/bash
-TARGET=$1
-if [ -z "$TARGET" ]; then
-    echo "Usage: $0 <target>"
-    exit 1
+#!/bin/sh
+
+if [ -z "$1" ]; then
+  echo "Usage: sh run.sh <host>"
+  exit 1
 fi
-ping -c 4 "$TARGET"
+
+OUTPUT_DIR="/app/reports/info_gathering/ping"
+mkdir -p "$OUTPUT_DIR"
+
+OUTPUT_FILE="${OUTPUT_DIR}/${1}_ping.txt"
+ping -c 4 "$1" > "$OUTPUT_FILE"
+
+echo "Ping results saved to $OUTPUT_FILE"

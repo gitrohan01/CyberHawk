@@ -1,5 +1,12 @@
 FROM alpine:latest
-RUN apk add --no-cache busybox-extras
-COPY run.sh /run.sh
-RUN chmod +x /run.sh
-ENTRYPOINT ["/run.sh"]
+
+RUN apk --no-cache add traceroute
+
+WORKDIR /app
+RUN mkdir -p /app/reports/info_gathering/traceroute
+
+COPY run.sh /app/run.sh
+RUN chmod +x /app/run.sh
+
+ENTRYPOINT ["sh", "/app/run.sh"]
+
