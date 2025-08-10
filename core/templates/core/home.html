@@ -2,35 +2,149 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>CyberHawk | Scan</title>
+    <title>CyberHawk | New Scan</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
-        body {
+        body.light-mode {
+            background: #f8f9fa;
+            color: #212529;
+        }
+        body.dark-mode {
             background: #111;
             color: #fff;
         }
         .form-container {
-            max-width: 600px;
-            margin: 100px auto;
-            background: #222;
+            max-width: 900px;
+            margin: 50px auto;
             padding: 30px;
             border-radius: 10px;
+        }
+        body.light-mode .form-container {
+            background: #fff;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        body.dark-mode .form-container {
+            background: #1a1a1a;
             box-shadow: 0 0 20px #00ffcc;
+        }
+        .help-box {
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        body.light-mode .help-box {
+            background: #f1f1f1;
+            border: 1px solid #ddd;
+        }
+        body.dark-mode .help-box {
+            background: #222;
+            border: 1px solid #00ffcc;
+        }
+        .nav-tabs .nav-link {
+            cursor: pointer;
+        }
+        .theme-toggle {
+            position: fixed;
+            top: 15px;
+            right: 15px;
         }
     </style>
 </head>
-<body>
+<body class="dark-mode">
+
+    <!-- Theme Toggle -->
+    <div class="theme-toggle">
+        <button id="themeSwitch" class="btn btn-outline-light">Light Mode</button>
+    </div>
+
     <div class="container">
         <div class="form-container">
-            <h2 class="text-center mb-4">🔍 CyberHawk Scanner</h2>
+            <h2 class="text-center mb-4">🔍 CyberHawk New Scan</h2>
             <form method="post" novalidate>
                 {% csrf_token %}
-                {{ form.as_p }}
-                <div class="text-center">
-                    <button type="submit" class="btn btn-success">Start Scan</button>
+
+                <!-- Scan Name -->
+                <div class="mb-3">
+                    <label class="form-label">Scan Name</label>
+                    <input type="text" name="name" class="form-control" placeholder="Enter scan name" required>
+                </div>
+
+                <!-- Scan Target + Help -->
+                <div class="row">
+                    <div class="col-md-8 mb-3">
+                        <label class="form-label">Scan Target</label>
+                        <input type="text" name="target_input" class="form-control" placeholder="example.com or 1.2.3.4" required>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="help-box">
+                            <strong>Target formats:</strong><br>
+                            Domain: example.com<br>
+                            IPv4: 1.2.3.4<br>
+                           
+                    </div>
+                </div>
+
+                <!-- Module Selection Tabs -->
+                <ul class="nav nav-tabs mt-3" id="moduleTab" role="tablist">
+                    <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#info">Info Gathering</a></li>
+                    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#enum">Enumeration</a></li>
+                    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#service">Service Enumeration</a></li>
+                    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#web">Web Exploitation</a></li>
+                    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#report">Report</a></li>
+                </ul>
+
+                <div class="tab-content mt-3">
+                    <div class="tab-pane fade show active" id="info">
+                        <p>Collects open-source intelligence (OSINT) such as domain details, WHOIS, DNS, and public exposure.</p>
+                        <input type="radio" name="module" value="info_gathering" checked hidden>
+                    </div>
+                    <div class="tab-pane fade" id="enum">
+                        <p>Scans and enumerates services, ports, and system banners.</p>
+                        <input type="radio" name="module" value="enumeration" hidden>
+                    </div>
+                    <div class="tab-pane fade" id="service">
+                        <p>Detects and enumerates running services. Will also run Info Gathering & Enumeration first.</p>
+                        <input type="radio" name="module" value="service_enumeration" hidden>
+                    </div>
+                    <div class="tab-pane fade" id="web">
+                        <p>Tests for web-based vulnerabilities. Will also run Info Gathering & Enumeration first.</p>
+                        <input type="radio" name="module" value="web_exploitation" hidden>
+                    </div>
+                    <div class="tab-pane fade" id="report">
+                        <p>Download final PDF/HTML reports after all scans are completed.</p>
+                        <input type="radio" name="module" value="report" hidden>
+                    </div>
+                </div>
+
+                <!-- Submit -->
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-success">🚀 Start Scan</button>
                 </div>
             </form>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sync selected tab with hidden radio button
+        document.querySelectorAll('#moduleTab .nav-link').forEach(tab => {
+            tab.addEventListener('shown.bs.tab', function (e) {
+                const value = e.target.textContent.trim().toLowerCase().replace(' ', '_');
+                document.querySelectorAll('input[name="module"]').forEach(r => r.checked = false);
+                document.querySelector(`input[name="module"][value="${value}"]`).checked = true;
+            });
+        });
+
+        // Theme toggle
+        const themeBtn = document.getElementById('themeSwitch');
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            document.body.classList.toggle('dark-mode');
+            themeBtn.textContent = document.body.classList.contains('light-mode') ? 'Dark Mode' : 'Light Mode';
+            themeBtn.classList.toggle('btn-outline-dark');
+            themeBtn.classList.toggle('btn-outline-light');
+        });
+    </script>
 </body>
 </html>
