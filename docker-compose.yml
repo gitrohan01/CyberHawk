@@ -26,5 +26,15 @@ services:
     depends_on:
       - db
 
+  dig:
+    build:
+      context: ./dig   # Path to folder with Dockerfile + run.sh
+    container_name: cyberhawk_dig
+    entrypoint: ["sh", "/app/run.sh"]
+    volumes:
+      - ./reports/info_gathering/dig:/app/reports/info_gathering/dig
+    depends_on:
+      - web
+
 volumes:
   db_data:

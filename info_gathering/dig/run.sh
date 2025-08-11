@@ -11,5 +11,4 @@ mkdir -p "$OUTPUT_DIR"
 OUTPUT_FILE="${OUTPUT_DIR}/${1}_dig.txt"
 dig "$1" > "$OUTPUT_FILE"
 
-echo "DIG results saved to $OUTPUT_FILE"
-
+cat "$OUTPUT_FILE"   # <-- so Django can read it
