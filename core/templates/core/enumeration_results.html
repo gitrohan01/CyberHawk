@@ -1,0 +1,36 @@
+{% extends "core/base.html" %}
+
+{% block title %}CyberHawk | Enumeration Results{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">🔍 Enumeration Results</h2>
+
+    {% if results %}
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Scan Name</th>
+                    <th>Target</th>
+                    <th>Open Ports</th>
+                    <th>Services</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in results %}
+                <tr>
+                    <td>{{ r.scan.name }}</td>
+                    <td>{{ r.scan.target }}</td>
+                    <td>{{ r.open_ports }}</td>
+                    <td>{{ r.services }}</td>
+                    <td>{{ r.scan.date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No enumeration results found.</p>
+    {% endif %}
+</div>
+{% endblock %}

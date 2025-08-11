@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import JSONField
+
+
 
 class Website(models.Model):
     url = models.URLField(unique=True)
@@ -32,6 +35,7 @@ class ScanSession(models.Model):
     start_time = models.DateTimeField(auto_now_add=True)
     end_time = models.DateTimeField(null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending', db_index=True)
+    modules_run = models.JSONField(default=list, blank=True) 
 
     def __str__(self):
         return f"{self.name} ({self.target_input}) - {self.status}"
@@ -86,6 +90,8 @@ class FinalReport(models.Model):
     pdf_path = models.FileField(upload_to='reports/pdf/', null=True, blank=True)
     html_path = models.FileField(upload_to='reports/html/', null=True, blank=True)
     generated_at = models.DateTimeField(auto_now_add=True)
+    modules_included = models.JSONField(default=list, blank=True)
+
 
     def __str__(self):
         return f"Final Report - {self.session.target_input} ({self.generated_at.strftime('%Y-%m-%d')})"

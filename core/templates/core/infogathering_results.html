@@ -1,0 +1,38 @@
+{% extends "core/base.html" %}
+
+{% block title %}CyberHawk | Info Gathering Results{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">📄 Info Gathering Results</h2>
+
+    {% if results %}
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Scan Name</th>
+                    <th>Target</th>
+                    <th>IP Address</th>
+                    <th>WHOIS</th>
+                    <th>DNS Records</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in results %}
+                <tr>
+                    <td>{{ r.scan.name }}</td>
+                    <td>{{ r.scan.target }}</td>
+                    <td>{{ r.ip }}</td>
+                    <td><pre>{{ r.whois }}</pre></td>
+                    <td><pre>{{ r.dns_records }}</pre></td>
+                    <td>{{ r.scan.date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No info gathering results found.</p>
+    {% endif %}
+</div>
+{% endblock %}

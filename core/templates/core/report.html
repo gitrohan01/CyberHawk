@@ -1,0 +1,37 @@
+{% extends "core/base.html" %}
+
+
+{% block title %}CyberHawk | Report{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">📑 Scan Reports</h2>
+
+    {% if reports %}
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Scan Name</th>
+                    <th>Target</th>
+                    <th>Date</th>
+                    <th>Download (PDF)</th>
+                    <th>Download (HTML)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in reports %}
+                <tr>
+                    <td>{{ r.scan.name }}</td>
+                    <td>{{ r.scan.target }}</td>
+                    <td>{{ r.scan.date }}</td>
+                    <td><a href="{{ r.pdf_url }}" class="btn btn-sm btn-danger">PDF</a></td>
+                    <td><a href="{{ r.html_url }}" class="btn btn-sm btn-primary">HTML</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No reports available.</p>
+    {% endif %}
+</div>
+{% endblock %}
