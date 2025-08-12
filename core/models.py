@@ -95,3 +95,29 @@ class FinalReport(models.Model):
 
     def __str__(self):
         return f"Final Report - {self.session.target_input} ({self.generated_at.strftime('%Y-%m-%d')})"
+
+
+class DigRecord(models.Model):
+    RECORD_TYPES = [
+        ('A', 'A'),
+        ('AAAA', 'AAAA'),
+        ('CNAME', 'CNAME'),
+        ('MX', 'MX'),
+        ('NS', 'NS'),
+        ('TXT', 'TXT'),
+        ('SOA', 'SOA'),
+        ('PTR', 'PTR'),
+    ]
+    website = models.ForeignKey(Website, on_delete=models.CASCADE, related_name='dig_records')
+    record_type = models.CharField(max_length=10, choices=RECORD_TYPES)
+    ttl = models.IntegerField(null=True, blank=True)
+    record_name = models.CharField(max_length=255)  # Usually domain or subdomain
+    record_data = models.TextField()  # IP, target domain, TXT content, etc.
+    mx_priority = models.IntegerField(null=True, blank=True)  # For MX records only
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['website', 'record_type']),
+        ]
+        unique_together = ('website', 'record_type', 'record_name', 'record_data')
