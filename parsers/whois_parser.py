@@ -90,7 +90,7 @@ def parse_whois_file(domain_name: str):
     }
     raw_log = {"raw": text[:8000]}
 
-    ToolResult.objects.create(
+    ReconResult.objects.create(
         website=website,
         tool_name="whois",
         target=domain_name,

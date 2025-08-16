@@ -62,7 +62,7 @@ def parse_traceroute_file(domain_name: str):
     tabular = {"hops": hops}
     raw_log = {"raw": text[:6000]}
 
-    ToolResult.objects.create(
+    ReconResult.objects.create(
         website=website,
         tool_name="traceroute",
         target=domain_name,

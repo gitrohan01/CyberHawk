@@ -63,7 +63,7 @@ def parse_ping_file(domain_name: str):
         "raw": text[:4000]
     }
 
-    ToolResult.objects.create(
+    ReconResult.objects.create(
         website=website,
         tool_name="ping",
         target=domain_name,

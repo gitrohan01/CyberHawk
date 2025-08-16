@@ -66,7 +66,7 @@ def parse_host_file(domain_name: str):
         "raw": text[:4000]  # bounded
     }
 
-    ToolResult.objects.create(
+    ReconResult.objects.create(
         website=website,
         tool_name="host",
         target=domain_name,

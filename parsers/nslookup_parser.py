@@ -92,7 +92,7 @@ def parse_nslookup_file(domain_name: str):
     }
     raw_log = {"raw": text[:4000]}
 
-    ToolResult.objects.create(
+    ReconResult.objects.create(
         website=website,
         tool_name="nslookup",
         target=domain_name,
