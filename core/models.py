@@ -44,11 +44,13 @@ class ScanSession(models.Model):
 class ReconResult(models.Model):
     session = models.ForeignKey(ScanSession, on_delete=models.CASCADE, related_name="recon_results")
     tool_name = models.CharField(max_length=100, db_index=True)
-    output = models.TextField()
+    output = models.TextField()  # RAW log output
+    structured_data = models.JSONField(default=dict, blank=True)  # TABULAR parsed output
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"[Recon] {self.tool_name} - {self.session.target_input}"
+
 
 
 class EnumerationResult(models.Model):

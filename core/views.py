@@ -7,6 +7,8 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from core import scan_runner
+from parsers import dig_parser, host_parser, nslookup_parser, ping_parser, traceroute_parser, whois_parser
 
 
 def custom_admin_login(request):
@@ -89,4 +91,30 @@ def web_results(request):
 def report(request):
     reports = []  # Replace with your report model/query
     return render(request, "core/report.html", {"reports": reports})
+
+def run_scan(request, domain):
+    session = ScanSession.objects.create(
+        name=f"Scan_{timezone.now().strftime('%Y%m%d_%H%M%S')}",
+        target_input=domain,
+        status="running"
+    )
+
+    # Run tools
+    _ = scan_runner.run_info_gathering(domain)
+
+    # Parse & Save results
+    from parsers import dig_parser, host_parser, nslookup_parser, ping_parser, traceroute_parser, whois_parser
+    dig_parser.parse_dig_file(domain, session.id)
+    host_parser.parse_host_file(domain, session.id)
+    nslookup_parser.parse_nslookup_file(domain, session.id)
+    ping_parser.parse_ping_file(domain, session.id)
+    traceroute_parser.parse_traceroute_file(domain, session.id)
+    whois_parser.parse_whois_file(domain, session.id)
+
+    # Update scan status
+    session.status = "completed"
+    session.end_time = timezone.now()
+    session.save()
+
+    return redirect("infogathering_results")
 
