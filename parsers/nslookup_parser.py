@@ -1,5 +1,5 @@
 # parsers/nslookup_parser.py
-from core.models import Website, ToolResult
+from core.models import Website, ReconResult
 from pathlib import Path
 import re
 
