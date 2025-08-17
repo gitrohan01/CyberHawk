@@ -26,15 +26,113 @@ services:
     depends_on:
       - db
 
+  # =====================
+  # Info Gathering Tools
+  # =====================
+
   dig:
-    build:
-      context: ./dig   # Path to folder with Dockerfile + run.sh
+    build: ./info_gathering/dig
     container_name: cyberhawk_dig
     entrypoint: ["sh", "/app/run.sh"]
     volumes:
       - ./reports/info_gathering/dig:/app/reports/info_gathering/dig
-    depends_on:
-      - web
+    depends_on: [web]
+
+  host:
+    build: ./info_gathering/host
+    container_name: cyberhawk_host
+    entrypoint: ["sh", "/app/run.sh"]
+    volumes:
+      - ./reports/info_gathering/host:/app/reports/info_gathering/host
+    depends_on: [web]
+
+  nslookup:
+    build: ./info_gathering/nslookup
+    container_name: cyberhawk_nslookup
+    entrypoint: ["sh", "/app/run.sh"]
+    volumes:
+      - ./reports/info_gathering/nslookup:/app/reports/info_gathering/nslookup
+    depends_on: [web]
+
+  ping:
+    build: ./info_gathering/ping
+    container_name: cyberhawk_ping
+    entrypoint: ["sh", "/app/run.sh"]
+    volumes:
+      - ./reports/info_gathering/ping:/app/reports/info_gathering/ping
+    depends_on: [web]
+
+  traceroute:
+    build: ./info_gathering/traceroute
+    container_name: cyberhawk_traceroute
+    entrypoint: ["sh", "/app/run.sh"]
+    volumes:
+      - ./reports/info_gathering/traceroute:/app/reports/info_gathering/traceroute
+    depends_on: [web]
+
+  whois:
+    build: ./info_gathering/whois
+    container_name: cyberhawk_whois
+    entrypoint: ["sh", "/app/run.sh"]
+    volumes:
+      - ./reports/info_gathering/whois:/app/reports/info_gathering/whois
+    depends_on: [web]
+
+  whatweb:
+    build: ./info_gathering/whatweb
+    container_name: cyberhawk_whatweb
+    entrypoint: ["sh", "/app/run.sh"]
+    volumes:
+      - ./reports/info_gathering/whatweb:/app/reports/info_gathering/whatweb
+    depends_on: [web]
+
+  wappalyzer:
+    build: ./info_gathering/wappalyzer
+    container_name: cyberhawk_wappalyzer
+    entrypoint: ["sh", "/app/run.sh"]
+    volumes:
+      - ./reports/info_gathering/wappalyzer:/app/reports/info_gathering/wappalyzer
+    depends_on: [web]
+
+  cmseek:
+    build: ./info_gathering/cmseek
+    container_name: cyberhawk_cmseek
+    entrypoint: ["sh", "/app/run.sh"]
+    volumes:
+      - ./reports/info_gathering/cmseek:/app/reports/info_gathering/cmseek
+    depends_on: [web]
+
+  wpscan:
+    build: ./info_gathering/wpscan
+    container_name: cyberhawk_wpscan
+    entrypoint: ["sh", "/app/run.sh"]
+    volumes:
+      - ./reports/info_gathering/wpscan:/app/reports/info_gathering/wpscan
+    depends_on: [web]
+
+  retirejs:
+    build: ./info_gathering/retirejs
+    container_name: cyberhawk_retirejs
+    entrypoint: ["sh", "/app/run.sh"]
+    volumes:
+      - ./reports/info_gathering/retirejs:/app/reports/info_gathering/retirejs
+    depends_on: [web]
+
+  blindelephant:
+    build: ./info_gathering/blindelephant
+    container_name: cyberhawk_blindelephant
+    entrypoint: ["sh", "/app/run.sh"]
+    volumes:
+      - ./reports/info_gathering/blindelephant:/app/reports/info_gathering/blindelephant
+    depends_on: [web]
+
+  httpx:
+    build: ./info_gathering/httpx
+    container_name: cyberhawk_httpx
+    entrypoint: ["sh", "/app/run.sh"]
+    volumes:
+      - ./reports/info_gathering/httpx:/app/reports/info_gathering/httpx
+    depends_on: [web]
 
 volumes:
   db_data:
