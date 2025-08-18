@@ -1,5 +1,11 @@
-# main.py
+import os
 import sys
+import django
+
+# Setup Django so parsers can use core.models
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "cyberhawk.settings")
+django.setup()
+
 from parsers import (
     dig_parser,
     host_parser,
@@ -7,9 +13,6 @@ from parsers import (
     ping_parser,
     traceroute_parser,
     whois_parser,
-)
-# new parsers
-from parsers import (
     httpx_parser,
     whatweb_parser,
     wappalyzer_parser,
@@ -18,6 +21,7 @@ from parsers import (
     wpscan_parser,
     blindelephant_parser,
 )
+
 
 TOOLS = {
     "dig": dig_parser.parse_dig_file,
