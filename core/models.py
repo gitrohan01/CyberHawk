@@ -1,11 +1,9 @@
-from django.db import models
+from django.db import models 
 from django.contrib.auth.models import User
-from django.db.models import JSONField
-
 
 
 class Website(models.Model):
-    url = models.URLField(unique=True)
+    url = models.URLField(max_length=191, unique=True)  # ✅ reduced for safe indexing
     scanned_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -28,14 +26,14 @@ class ScanSession(models.Model):
     ]
 
     admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name="scan_sessions")
-    name = models.CharField(max_length=255)  # NEW: user-given scan name
-    target_input = models.CharField(max_length=255, db_index=True)  # e.g., domain.com or IP
-    target_type = models.CharField(max_length=50, blank=True, null=True)  # NEW: domain/ip/email/etc.
-    profile = models.CharField(max_length=20, choices=PROFILE_CHOICES, default='all')  # NEW
+    name = models.CharField(max_length=255)  # ✅ not indexed, 255 is fine
+    target_input = models.CharField(max_length=191, db_index=True)  # ✅ reduced
+    target_type = models.CharField(max_length=50, blank=True, null=True)
+    profile = models.CharField(max_length=20, choices=PROFILE_CHOICES, default='all')
     start_time = models.DateTimeField(auto_now_add=True)
     end_time = models.DateTimeField(null=True, blank=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending', db_index=True)
-    modules_run = models.JSONField(default=list, blank=True) 
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending', db_index=True)  # ✅ short, safe
+    modules_run = models.JSONField(default=list, blank=True)
 
     def __str__(self):
         return f"{self.name} ({self.target_input}) - {self.status}"
@@ -43,19 +41,22 @@ class ScanSession(models.Model):
 
 class ReconResult(models.Model):
     session = models.ForeignKey(ScanSession, on_delete=models.CASCADE, related_name="recon_results")
-    tool_name = models.CharField(max_length=100, db_index=True)
-    output = models.TextField()  # RAW log output
-    structured_data = models.JSONField(default=dict, blank=True)  # TABULAR parsed output
+    website = models.ForeignKey(Website, on_delete=models.CASCADE, null=True, blank=True)
+    target = models.CharField(max_length=191, null=True, blank=True)  # ✅ reduced
+
+    tool_name = models.CharField(max_length=100, db_index=True)  # ✅ safe
+    raw_log = models.TextField()
+    tabular_data = models.JSONField(default=dict, blank=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"[Recon] {self.tool_name} - {self.session.target_input}"
 
 
-
 class EnumerationResult(models.Model):
     session = models.ForeignKey(ScanSession, on_delete=models.CASCADE, related_name="enum_results")
-    tool_name = models.CharField(max_length=100, db_index=True)
+    tool_name = models.CharField(max_length=100, db_index=True)  # ✅ safe
     output = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -65,8 +66,8 @@ class EnumerationResult(models.Model):
 
 class VulnScanResult(models.Model):
     session = models.ForeignKey(ScanSession, on_delete=models.CASCADE, related_name="vuln_results")
-    vuln_name = models.CharField(max_length=255, db_index=True)
-    severity = models.CharField(max_length=50, db_index=True)  # Low, Medium, High, Critical
+    vuln_name = models.CharField(max_length=191, db_index=True)  # ✅ reduced
+    severity = models.CharField(max_length=50, db_index=True)   # ✅ short, safe
     description = models.TextField()
     output = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -77,9 +78,9 @@ class VulnScanResult(models.Model):
 
 class ExploitResult(models.Model):
     session = models.ForeignKey(ScanSession, on_delete=models.CASCADE, related_name="exploit_results")
-    exploit_name = models.CharField(max_length=255, db_index=True)
-    source = models.CharField(max_length=255, db_index=True)  # Exploit-DB, CVE, etc.
-    status = models.CharField(max_length=50, db_index=True)  # Success, Failed
+    exploit_name = models.CharField(max_length=191, db_index=True)  # ✅ reduced
+    source = models.CharField(max_length=191, db_index=True)       # ✅ reduced
+    status = models.CharField(max_length=50, db_index=True)        # ✅ safe
     output = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -93,7 +94,6 @@ class FinalReport(models.Model):
     html_path = models.FileField(upload_to='reports/html/', null=True, blank=True)
     generated_at = models.DateTimeField(auto_now_add=True)
     modules_included = models.JSONField(default=list, blank=True)
-
 
     def __str__(self):
         return f"Final Report - {self.session.target_input} ({self.generated_at.strftime('%Y-%m-%d')})"
@@ -113,13 +113,13 @@ class DigRecord(models.Model):
     website = models.ForeignKey(Website, on_delete=models.CASCADE, related_name='dig_records')
     record_type = models.CharField(max_length=10, choices=RECORD_TYPES)
     ttl = models.IntegerField(null=True, blank=True)
-    record_name = models.CharField(max_length=255)  # Usually domain or subdomain
-    record_data = models.TextField()  # IP, target domain, TXT content, etc.
-    mx_priority = models.IntegerField(null=True, blank=True)  # For MX records only
+    record_name = models.CharField(max_length=191)  # ✅ reduced
+    record_data = models.CharField(max_length=512)  # ✅ not indexed, safe at 512
+    mx_priority = models.IntegerField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         indexes = [
             models.Index(fields=['website', 'record_type']),
         ]
-        unique_together = ('website', 'record_type', 'record_name', 'record_data')
+        unique_together = ('website', 'record_type', 'record_name')
