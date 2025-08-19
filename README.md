@@ -15,7 +15,7 @@ It includes tools and scripts for vulnerability assessment, scanning, and inform
 
 ## Requirements
 - Python 3.x
-- Django (if applicable)
+- Django 
 - Required dependencies (see `requirements.txt`)
 
 ---
