@@ -1,0 +1,20 @@
+
+; <<>> DiG 9.20.9-1-Debian <<>> icssatara.com
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 49985
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; MBZ: 0x0005, udp: 512
+;; QUESTION SECTION:
+;icssatara.com.			IN	A
+
+;; ANSWER SECTION:
+icssatara.com.		5	IN	A	148.66.138.145
+
+;; Query time: 151 msec
+;; SERVER: 192.168.20.2#53(192.168.20.2) (UDP)
+;; WHEN: Wed Aug 20 22:41:00 IST 2025
+;; MSG SIZE  rcvd: 58
+

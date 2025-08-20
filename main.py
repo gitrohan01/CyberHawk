@@ -36,7 +36,7 @@ TOOLS = {
     "cmseek": cmseek_parser.parse_cmseek_file,
     "retirejs": retirejs_parser.parse_retirejs_file,
     "wpscan": wpscan_parser.parse_wpscan_file,
-    "blindelephant": blindelephant_parser.parse_blindelephant_file,
+    
 }
 
 def run_parsers(domain_name: str, session_id: int = None, tool: str = None):
