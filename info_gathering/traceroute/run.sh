@@ -5,7 +5,7 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
-OUTPUT_DIR="/app/reports/info_gathering/traceroute"
+OUTPUT_DIR="./reports/info_gathering/traceroute"
 mkdir -p "$OUTPUT_DIR"
 
 OUTPUT_FILE="${OUTPUT_DIR}/${1}_traceroute.txt"

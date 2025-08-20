@@ -1,0 +1,1 @@
+./info_gathering/retirejs/run.sh: line 12: retire: command not found

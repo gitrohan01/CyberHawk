@@ -5,7 +5,7 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
-OUTPUT_DIR="/app/reports/info_gathering/whatweb"
+OUTPUT_DIR="./reports/info_gathering/whatweb"
 mkdir -p "$OUTPUT_DIR"
 
 OUTPUT_FILE="${OUTPUT_DIR}/${1}_whatweb.txt"

@@ -19,7 +19,7 @@ from parsers import (
     cmseek_parser,
     retirejs_parser,
     wpscan_parser,
-    blindelephant_parser,
+    
 )
 
 

@@ -118,13 +118,7 @@ services:
       - ./reports/info_gathering/retirejs:/app/reports/info_gathering/retirejs
     depends_on: [web]
 
-  blindelephant:
-    build: ./info_gathering/blindelephant
-    container_name: cyberhawk_blindelephant
-    entrypoint: ["sh", "/app/run.sh"]
-    volumes:
-      - ./reports/info_gathering/blindelephant:/app/reports/info_gathering/blindelephant
-    depends_on: [web]
+  
 
   httpx:
     build: ./info_gathering/httpx

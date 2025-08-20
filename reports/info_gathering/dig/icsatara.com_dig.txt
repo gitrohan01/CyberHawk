@@ -1,0 +1,20 @@
+
+; <<>> DiG 9.20.9-1-Debian <<>> icsatara.com
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NXDOMAIN, id: 31498
+;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; MBZ: 0x0005, udp: 512
+;; QUESTION SECTION:
+;icsatara.com.			IN	A
+
+;; AUTHORITY SECTION:
+com.			5	IN	SOA	a.gtld-servers.net. nstld.verisign-grs.com. 1755707525 1800 900 604800 900
+
+;; Query time: 173 msec
+;; SERVER: 192.168.20.2#53(192.168.20.2) (UDP)
+;; WHEN: Wed Aug 20 22:02:24 IST 2025
+;; MSG SIZE  rcvd: 114
+

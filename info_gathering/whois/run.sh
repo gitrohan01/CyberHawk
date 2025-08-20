@@ -5,7 +5,7 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
-OUTPUT_DIR="/app/reports/info_gathering/whois"
+OUTPUT_DIR="./reports/info_gathering/whois"
 mkdir -p "$OUTPUT_DIR"
 
 OUTPUT_FILE="${OUTPUT_DIR}/${1}_whois.txt"
