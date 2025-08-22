@@ -1,0 +1,4 @@
+npm ERR! could not determine executable to run
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /home/kali/.npm/_logs/2025-08-22T15_07_04_172Z-debug-0.log

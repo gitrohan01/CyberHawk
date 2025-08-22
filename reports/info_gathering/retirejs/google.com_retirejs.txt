@@ -1,0 +1,16 @@
+retire.js v5.3.0
+Downloading https://raw.githubusercontent.com/RetireJS/retire.js/master/repository/jsrepository-v4.json ...
+Exception caught:  Error: error reading first path in the walk google.com
+Error: ENOENT: no such file or directory, lstat 'google.com'
+    at EventEmitter.<anonymous> (/usr/local/lib/node_modules/retire/node_modules/walkdir/walkdir.js:265:28)
+    at Object.onceWrapper (node:events:639:26)
+    at EventEmitter.emit (node:events:524:28)
+    at fn (/usr/local/lib/node_modules/retire/node_modules/walkdir/walkdir.js:100:17)
+    at FSReqCallback.oncomplete (node:fs:198:21) [ 'uncaughtException' ]
+Error: error reading first path in the walk google.com
+Error: ENOENT: no such file or directory, lstat 'google.com'
+    at EventEmitter.<anonymous> (/usr/local/lib/node_modules/retire/node_modules/walkdir/walkdir.js:265:28)
+    at Object.onceWrapper (node:events:639:26)
+    at EventEmitter.emit (node:events:524:28)
+    at fn (/usr/local/lib/node_modules/retire/node_modules/walkdir/walkdir.js:100:17)
+    at FSReqCallback.oncomplete (node:fs:198:21)

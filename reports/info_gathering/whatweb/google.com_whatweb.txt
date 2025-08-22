@@ -1,0 +1,2 @@
+http://www.google.com/ [200 OK] HTTPServer[gws] IP[142.250.183.110]  Title[Google]  
+From Shodan Internal DB: Ports[80, 443] CPEs[cpe:/a:google:web_server] Hostnames[bom12s13-in-f14.1e100.net] Tags[self-signed] 

@@ -113,8 +113,8 @@ class DigRecord(models.Model):
     website = models.ForeignKey(Website, on_delete=models.CASCADE, related_name='dig_records')
     record_type = models.CharField(max_length=10, choices=RECORD_TYPES)
     ttl = models.IntegerField(null=True, blank=True)
-    record_name = models.CharField(max_length=191)  # ✅ reduced
-    record_data = models.CharField(max_length=512)  # ✅ not indexed, safe at 512
+    record_name = models.CharField(max_length=191)  
+    record_data = models.CharField(max_length=512)  
     mx_priority = models.IntegerField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

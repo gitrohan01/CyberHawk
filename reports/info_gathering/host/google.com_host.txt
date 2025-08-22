@@ -1,0 +1,4 @@
+google.com has address 142.251.220.78
+google.com has IPv6 address 2404:6800:4009:806::200e
+google.com mail is handled by 10 smtp.google.com.
+google.com has HTTP service bindings 1 . alpn="h2,h3"
