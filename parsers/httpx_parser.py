@@ -1,35 +1,28 @@
+# parsers/httpx_parser.py
 from core.models import Website, ReconResult
-from pathlib import Path
-import json
 
-def parse_httpx_file(domain_name: str):
-    path = Path(f"reports/info_gathering/httpx/{domain_name}_httpx.json")
-    if not path.exists():
-        print(f"[httpx] file not found: {path}")
-        return
-
-    text = path.read_text(encoding="utf-8", errors="ignore")
-    website, _ = Website.objects.get_or_create(url=domain_name)
-
-    structured = []
-    for line in text.strip().splitlines():
-        try:
-            data = json.loads(line)
-        except json.JSONDecodeError:
-            continue
-        structured.append({
-            "url": data.get("url"),
-            "status": data.get("status-code"),
-            "title": data.get("title"),
-            "ip": data.get("host"),
-            "tech": data.get("tech", [])
-        })
+def parse(raw_output: str, website: Website, session):
+    """
+    Parses httpx output like URL, status, title, technologies.
+    """
+    lines = raw_output.splitlines()
+    results = []
+    for line in lines:
+        if line.strip():
+            # Example: http://example.com [200 OK] Title: Example
+            parts = line.split()
+            url = parts[0]
+            status = parts[1] if len(parts) > 1 else ""
+            title = " ".join(parts[2:]).replace("Title:", "").strip() if len(parts) > 2 else ""
+            results.append({"url": url, "status": status, "title": title})
 
     ReconResult.objects.create(
+        session=session,
         website=website,
         tool_name="httpx",
-        target=domain_name,
-        structured_data={"results": structured},
-        raw_log={"raw": text[:4000]}
+        target=website.url,
+        raw_log=raw_output[:5000],
+        tabular_data={"results": results}
     )
-    print(f"[httpx] parsed & saved for {domain_name}")
+
+    return {"results": results}

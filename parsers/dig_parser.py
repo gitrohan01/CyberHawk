@@ -1,31 +1,17 @@
 # parsers/dig_parser.py
 from core.models import Website, DigRecord, ReconResult, ScanSession
-from pathlib import Path
 import re
 
-def parse_dig_file(domain_name: str, session_id: int):
-    file_path = Path(f"reports/info_gathering/dig/{domain_name}_dig.txt")
-    if not file_path.exists():
-        print(f"[dig] file not found: {file_path}")
-        return
+def parse(raw_output: str, website: Website, session: ScanSession):
+    """
+    Parses dig output from raw string and stores records in DB.
+    Returns structured data as dict.
+    """
+    lines = raw_output.splitlines()
 
-    text = file_path.read_text(encoding="utf-8", errors="ignore")
-    lines = text.splitlines()
+    # Clean old dig records
+    website.dig_records.all().delete()
 
-    # Link to ScanSession
-    try:
-        session = ScanSession.objects.get(id=session_id)
-    except ScanSession.DoesNotExist:
-        print(f"[dig] session {session_id} not found")
-        return
-
-    # Get or create Website
-    website_obj, _ = Website.objects.get_or_create(url=domain_name)
-
-    # Clean old dig records for this website (avoid dupes)
-    website_obj.dig_records.all().delete()
-
-    # Extract Answer Section
     answer_section = []
     section = None
     for line in lines:
@@ -52,10 +38,9 @@ def parse_dig_file(domain_name: str, session_id: int):
                 mx_priority = int(mx_match.group(1))
                 rdata = mx_match.group(2)
 
-        # Save to DigRecord table
         try:
             DigRecord.objects.create(
-                website=website_obj,
+                website=website,
                 record_type=rtype,
                 ttl=int(ttl) if ttl.isdigit() else None,
                 record_name=name,
@@ -74,12 +59,14 @@ def parse_dig_file(domain_name: str, session_id: int):
             "mx_priority": mx_priority
         })
 
-    # Save into ReconResult
+    # Save ReconResult
     ReconResult.objects.create(
         session=session,
+        website=website,
         tool_name="dig",
-        output=text[:2000],  # keep raw log truncated
-        structured_data={"records": records}
+        target=website.url,
+        raw_log=raw_output[:5000],
+        tabular_data={"records": records}
     )
 
-    print(f"[dig] parsed & saved for {domain_name} in session {session_id}")
+    return {"records": records}

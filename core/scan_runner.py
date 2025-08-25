@@ -5,6 +5,7 @@ import sys
 import os
 import django
 from django.utils import timezone
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Setup Django for standalone execution
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -36,6 +37,7 @@ def run_tool(tool_name: str, target: str) -> str:
 def parse_and_store(tool_name: str, raw_output: str, website: Website, session: ScanSession):
     """
     Dynamically load <toolname>_parser.py and call `parse(raw_output, website, session)`.
+    Stores raw log (truncated) + structured/tabular data into DB.
     """
     try:
         parser_module = importlib.import_module(f"parsers.{tool_name}_parser")
@@ -44,7 +46,6 @@ def parse_and_store(tool_name: str, raw_output: str, website: Website, session: 
         else:
             tabular_data = {}
 
-        # Always save ReconResult (even if parser fails)
         ReconResult.objects.create(
             session=session,
             website=website,
@@ -53,7 +54,6 @@ def parse_and_store(tool_name: str, raw_output: str, website: Website, session: 
             raw_log=raw_output[:5000],  # truncate if huge
             tabular_data=tabular_data or {}
         )
-
         print(f"[+] Stored {tool_name} results for {website.url}")
 
     except ModuleNotFoundError:
@@ -72,7 +72,7 @@ def parse_and_store(tool_name: str, raw_output: str, website: Website, session: 
 
 def run_info_gathering(session: ScanSession, target: str, tools: list):
     """
-    Run all tools against a target, parse and store results in DB.
+    Run all tools against a target in parallel, parse and store results in DB.
     """
     website, _ = Website.objects.get_or_create(url=target)
 
@@ -80,10 +80,19 @@ def run_info_gathering(session: ScanSession, target: str, tools: list):
     session.start_time = timezone.now()
     session.save()
 
-    for tool in tools:
-        raw_output = run_tool(tool, target)
-        if raw_output:
-            parse_and_store(tool, raw_output, website, session)
+    futures = {}
+    with ThreadPoolExecutor(max_workers=len(tools)) as executor:
+        for tool in tools:
+            futures[executor.submit(run_tool, tool, target)] = tool
+
+        for future in as_completed(futures):
+            tool = futures[future]
+            try:
+                raw_output = future.result()
+                if raw_output:
+                    parse_and_store(tool, raw_output, website, session)
+            except Exception as e:
+                print(f"[!] Tool {tool} failed: {e}")
 
     session.status = "completed"
     session.end_time = timezone.now()
@@ -95,11 +104,13 @@ def run_info_gathering(session: ScanSession, target: str, tools: list):
 if __name__ == "__main__":
     # Example usage
     target_url = "example.com"
-    tools_to_run = ["dig", "cmseek"]  # must have parsers/dig_parser.py etc.
+    tools_to_run = ["dig", "cmseek", "host", "httpx"]  # Add any tool you have parser for
+
     session = ScanSession.objects.create(
         admin_id=1,  # replace with actual admin user id
         name=f"Scan for {target_url}",
         target_input=target_url,
         status="pending"
     )
+
     run_info_gathering(session, target_url, tools_to_run)

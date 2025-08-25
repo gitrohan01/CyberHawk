@@ -1,24 +1,11 @@
 # parsers/host_parser.py
-from core.models import Website, ReconResult
-from pathlib import Path
+from core.models import Website, ReconResult, ScanSession
+
 import re
 
-def parse_host_file(domain_name: str):
-    path = Path(f"reports/info_gathering/host/{domain_name}_host.txt")
-    if not path.exists():
-        print(f"[host] file not found: {path}")
-        return
+def parse(raw_output: str, website: Website, session: ScanSession):
+    lines = raw_output.splitlines()
 
-    text = path.read_text(encoding="utf-8", errors="ignore")
-    lines = text.splitlines()
-
-    website, _ = Website.objects.get_or_create(url=domain_name)
-
-    # host outputs lines like:
-    # example.com has address 93.184.216.34
-    # example.com has IPv6 address 2606:2800:220:1:248:1893:25c8:1946
-    # example.com mail is handled by 10 mx1.example.com.
-    # example.com is an alias for www.example.com.
     A, AAAA, MX, CNAME, NS, TXT = [], [], [], [], [], []
 
     mx_re = re.compile(r"mail is handled by\s+(\d+)\s+(\S+)")
@@ -45,9 +32,8 @@ def parse_host_file(domain_name: str):
             if m:
                 NS.append(m.group(1).rstrip('.'))
                 continue
-            m = cname_re in line and line.split(cname_re, 1)[1].strip()
-            if m:
-                CNAME.append(str(m).rstrip('.'))
+            if cname_re in line:
+                CNAME.append(line.split(cname_re, 1)[1].strip().rstrip('.'))
                 continue
             m = txt_re.search(line)
             if m:
@@ -59,18 +45,16 @@ def parse_host_file(domain_name: str):
         "CNAME": sorted(set(CNAME)),
         "MX": sorted(MX, key=lambda x: x["priority"]) if MX else [],
         "NS": sorted(set(NS)),
-        "TXT": TXT,
-    }
-
-    raw_log = {
-        "raw": text[:4000]  # bounded
+        "TXT": TXT
     }
 
     ReconResult.objects.create(
+        session=session,
         website=website,
         tool_name="host",
-        target=domain_name,
-        tabular_data=tabular,
-        raw_log=raw_log
+        target=website.url,
+        raw_log=raw_output[:5000],
+        tabular_data=tabular
     )
-    print(f"[host] parsed & saved for {domain_name}")
+
+    return tabular

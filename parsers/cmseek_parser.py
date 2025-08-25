@@ -1,27 +1,28 @@
+# parsers/cmseek_parser.py
 from core.models import Website, ReconResult
-from pathlib import Path
-import json
 
-def parse_cmseek_file(domain_name: str):
-    path = Path(f"reports/info_gathering/cmseek/{domain_name}_cmseek.json")
-    if not path.exists():
-        print(f"[cmseek] file not found: {path}")
-        return
+def parse(raw_output: str, website: Website, session):
+    """
+    Parses CMSeek output for services, version, ports.
+    """
+    lines = raw_output.splitlines()
+    results = []
 
-    text = path.read_text(encoding="utf-8", errors="ignore")
-    website, _ = Website.objects.get_or_create(url=domain_name)
-
-    try:
-        data = json.loads(text)
-    except json.JSONDecodeError:
-        print("[cmseek] invalid JSON")
-        return
+    for line in lines:
+        if line.strip() and ":" in line:
+            # Example: http:80 Apache/2.4.41
+            parts = line.split(":", 1)
+            service_port = parts[0].strip()
+            service_info = parts[1].strip()
+            results.append({"service_port": service_port, "service_info": service_info})
 
     ReconResult.objects.create(
+        session=session,
         website=website,
         tool_name="cmseek",
-        target=domain_name,
-        structured_data=data,
-        raw_log={"raw": text[:4000]}
+        target=website.url,
+        raw_log=raw_output[:5000],
+        tabular_data={"services": results}
     )
-    print(f"[cmseek] parsed & saved for {domain_name}")
+
+    return {"services": results}

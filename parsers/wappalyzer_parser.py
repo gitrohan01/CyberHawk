@@ -1,27 +1,22 @@
+# parsers/wappalyzer_parser.py
 from core.models import Website, ReconResult
-from pathlib import Path
 import json
 
-def parse_wappalyzer_file(domain_name: str):
-    path = Path(f"reports/info_gathering/wappalyzer/{domain_name}_wappalyzer.json")
-    if not path.exists():
-        print(f"[wappalyzer] file not found: {path}")
-        return
-
-    text = path.read_text(encoding="utf-8", errors="ignore")
-    website, _ = Website.objects.get_or_create(url=domain_name)
-
+def parse(raw_output: str, website: Website, session):
+    """
+    Parses Wappalyzer JSON output.
+    """
     try:
-        data = json.loads(text)
-    except json.JSONDecodeError:
-        print("[wappalyzer] invalid JSON")
-        return
-
+        data = json.loads(raw_output)
+    except Exception:
+        data = {"error": "Failed to parse JSON"}
+    
     ReconResult.objects.create(
+        session=session,
         website=website,
         tool_name="wappalyzer",
-        target=domain_name,
-        structured_data=data,
-        raw_log={"raw": text[:4000]}
+        target=website.url,
+        raw_log=raw_output[:5000],
+        tabular_data=data
     )
-    print(f"[wappalyzer] parsed & saved for {domain_name}")
+    return data
