@@ -8,7 +8,8 @@ from django.utils import timezone
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Setup Django for standalone execution
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # project root
+sys.path.append(BASE_DIR)
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "cyberhawk.settings")
 django.setup()
 
@@ -102,9 +103,12 @@ def run_info_gathering(session: ScanSession, target: str, tools: list):
 
 
 if __name__ == "__main__":
-    # Example usage
-    target_url = "example.com"
-    tools_to_run = ["dig", "cmseek", "host", "httpx"]  # Add any tool you have parser for
+    if len(sys.argv) < 2:
+        print("Usage: python core/scan_runner.py <target_url>")
+        sys.exit(1)
+
+    target_url = sys.argv[1]
+    tools_to_run = ["dig", "cmseek", "host", "httpx"]  # expand later
 
     session = ScanSession.objects.create(
         admin_id=1,  # replace with actual admin user id
