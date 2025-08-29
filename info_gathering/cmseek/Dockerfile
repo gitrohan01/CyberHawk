@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y git && \
 
 WORKDIR /opt/cmseek
 
+# Copy run.sh (no local reports)
 COPY run.sh /app/run.sh
 RUN chmod +x /app/run.sh
 

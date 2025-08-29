@@ -5,11 +5,6 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
-OUTPUT_DIR="./reports/info_gathering/nslookup"
-mkdir -p "$OUTPUT_DIR"
+nslookup "$1"
 
-OUTPUT_FILE="${OUTPUT_DIR}/${1}_nslookup.txt"
-nslookup "$1" > "$OUTPUT_FILE"
-
-echo "NSLOOKUP results saved to $OUTPUT_FILE"
 
